@@ -8,7 +8,8 @@
 </head>
 <body>
 <div id="text1" style="width: 80%;height: 400px;margin: 20px 10% 20px 10%"></div>
-<div id="text2" style="width: 80%;height:400px;margin: 20px 10% 20px 10%"></div>
+<div id="text2" style="width: 80%;height: 400px;margin: 20px 10% 20px 10%"></div>
+<div id="text3" style="width: 80%;height: 400px;margin: 20px 10% 20px 10%"></div>
 <script>
     var topic="";
     var x_data = [];
@@ -17,17 +18,25 @@
     var x_data2 = [];
     var y_data2 = [];
     var chart_series2 = [];
+    var x_data3 = [];
+    var y_data3 = [];
+    var chart_series3 = [];
     var myChart = echarts.init(document.getElementById('text1'));
     var myChart2 = echarts.init(document.getElementById('text2'));
+    var myChart3 = echarts.init(document.getElementById('text3'));
     $(document).ready(function () {
         topic=obtainTopic("page");
         distGet();
         tempGet();
+        humidGet();
         setInterval(function () {
             distGet();
         },1000);
         setInterval(function () {
             tempGet();
+        },1000);
+        setInterval(function () {
+            humidGet();
         },1000);
     });
 
@@ -154,6 +163,57 @@
             series: chart_series
         });
     }
+    function setHumidChart(response) {
+        x_data3=[];
+        y_data3=[];
+        chart_series3=[];
+        for (var i = 0; i < response.data.length; i++) {
+            x_data3.push(formatTime(response.data[i].createTime));
+            y_data3.push(response.data[i].dist);
+        }
+        chart_series3.push({
+            name: "humid",
+            type: 'line',
+            animation:false,
+            data: y_data3,
+        })
+        myChart3.clear();
+        myChart3.setOption({
+            title: {
+                text: "humid"
+            },
+            tooltip: {
+                trigger: 'axis',
+            },
+            legend: {
+                width: 360,
+                data: ['humid'],
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    // dataView: {readOnly: true},
+                    magicType: {type: ['bar', 'line',]},
+                    saveAsImage: {},
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: x_data3
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: chart_series3
+        });
+    }
 
     function distGet() {
         $.ajax({
@@ -191,6 +251,26 @@
             },
             error: function () {
                 console.log("error");
+            }
+        })
+    }
+
+    function humidGet() {
+        $.ajax({
+            type: 'get',
+            url: "/humid/get?topic="+topic,
+            data: {},
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.info === "查询成功") {
+                    console.log(response);
+                    setHumidChart(response);
+                }
+            },
+            error: function () {
+                console.log("error")
             }
         })
     }

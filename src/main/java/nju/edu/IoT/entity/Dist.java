@@ -11,17 +11,17 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "dist")
+@Table(name = "T_DIST")
 @NoArgsConstructor
 public class Dist {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "F_ID")
     private int id;
-    @Column(name = "topic")
+    @Column(name = "F_TOPIC")
     private String topic;
-    @Column(name = "dist")
+    @Column(name = "F_DIST")
     private int dist;
-    @Column(name = "create_time")
+    @Column(name = "F_RECV_TIME")
     private Timestamp createTime;
 }
