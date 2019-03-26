@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: iot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.102.122.172:3306/iot?useLegacyDatetimeCode=false&serverTimezone=CTT&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: z86118531
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+    encoding: UTF-8
+    mode: HTML5
+  mvc:
+    static-path-pattern: /static/**
+
+server:
+  port: 8096
+spring.session.store-type: none

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>嵌入式</title>
+    <script type="text/javascript" th:src="@{/static/jquery/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/echarts/echarts.js}"></script>
+</head>
+<body>
+<div id="text1" style="width: 80%;height: 400px;margin: 20px 10% 20px 10%"></div>
+<div id="text2" style="width: 80%;height:400px;margin: 20px 10% 20px 10%"></div>
+<script>
+    var topic="";
+    var x_data = [];
+    var y_data = [];
+    var chart_series = [];
+    var x_data2 = [];
+    var y_data2 = [];
+    var chart_series2 = [];
+    var myChart = echarts.init(document.getElementById('text1'));
+    var myChart2 = echarts.init(document.getElementById('text2'));
+    $(document).ready(function () {
+        topic=obtainTopic("page");
+        distGet();
+        tempGet();
+        setInterval(function () {
+            distGet();
+        },1000);
+        setInterval(function () {
+            tempGet();
+        },1000);
+    });
+
+    function obtainTopic(name) {
+        var reg = new RegExp('(?:(?:&|\\?)' + name + '=([^&]*))|(?:/' + name + '/([^/]*))', 'i');
+        var r = window.location.href.match(reg);
+        if (r != null)
+            return decodeURI(r[1] || r[2]);
+        return null;
+    }
+
+    function formatTime(time) {
+        var today = new Date(time);
+        // let year = today.getFullYear();
+        // let month = ('0' + (today.getMonth() + 1)).slice(-2).toString();
+        // let date = ('0' + today.getDate()).slice(-2).toString();
+        // let hour = ('0' + today.getHours()).slice(-2).toString();
+        var minute = ('0' + today.getMinutes()).slice(-2).toString();
+        var seconds = ('0' + today.getSeconds()).slice(-2).toString();
+        var date_string = minute + ":" + seconds;
+        return date_string;
+    }
+
+    function setTempChart(response) {
+        x_data2=[];
+        y_data2=[];
+        chart_series2=[];
+        for (var i = 0; i < response.data.length; i++) {
+            x_data2.push(formatTime(response.data[i].createTime));
+            y_data2.push(response.data[i].temp);
+        }
+        chart_series2.push({
+            name: "temp",
+            type: 'line',
+            animation:false,
+            data: y_data2,
+        })
+        myChart2.clear();
+        myChart2.setOption({
+            title: {
+                text: "temp"
+            },
+            tooltip: {
+                trigger: 'axis',
+            },
+            legend: {
+                width: 360,
+                data: ['temp'],
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    // dataView: {readOnly: true},
+                    magicType: {type: ['bar', 'line',]},
+                    saveAsImage: {},
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: x_data2
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: chart_series2
+        });
+    }
+
+    function setDistChart(response) {
+        x_data=[];
+        y_data=[];
+        chart_series=[];
+        for (var i = 0; i < response.data.length; i++) {
+            x_data.push(formatTime(response.data[i].createTime));
+            y_data.push(response.data[i].dist);
+        }
+        chart_series.push({
+            name: "dist",
+            type: 'line',
+            animation:false,
+            data: y_data,
+        })
+        myChart.clear();
+        myChart.setOption({
+            title: {
+                text: "dist"
+            },
+            tooltip: {
+                trigger: 'axis',
+            },
+            legend: {
+                width: 360,
+                data: ['dist'],
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    // dataView: {readOnly: true},
+                    magicType: {type: ['bar', 'line',]},
+                    saveAsImage: {},
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: x_data
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: chart_series
+        });
+    }
+
+    function distGet() {
+        $.ajax({
+            type: 'get',
+            url: "/dist/get?topic="+topic,
+            data: {},
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.info === "查询成功") {
+                    console.log(response);
+                    setDistChart(response);
+                }
+            },
+            error: function () {
+                console.log("error")
+            }
+        })
+    }
+
+    function tempGet() {
+        $.ajax({
+            type: 'get',
+            url: "/temp/get?topic="+topic,
+            data: {},
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.info === "查询成功") {
+                    setTempChart(response);
+                    console.log(response);
+                }
+            },
+            error: function () {
+                console.log("error");
+            }
+        })
+    }
+</script>
+</body>
+</html>
