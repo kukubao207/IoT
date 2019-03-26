@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Dist {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
     @Column(name = "topic")

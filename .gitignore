@@ -1,0 +1,13 @@
+*.iml
+.*
+target/**
+**/target/**
+*.bak
+**.bak
+**/*.iml
+logs/**
+**.jks
+**.properties
+**.yml
+*.png
+*.jpg
