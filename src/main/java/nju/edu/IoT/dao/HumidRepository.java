@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface HumidRepository extends CrudRepository<Humid, Integer> {
-    @Query(value = "SELECT * from F_TEMP r where r.F_TOPIC =?1 order by r.F_ID desc limit 30", nativeQuery = true)
+    @Query(value = "SELECT * from t_humid r where r.f_topic =?1 order by r.f_id desc limit 30", nativeQuery = true)
     List<Humid> findHumidsByTopic(String topic);
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "F_TEMP")
+@Table(name = "T_TEMP")
 @NoArgsConstructor
 public class Temp {
     @Id

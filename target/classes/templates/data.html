@@ -169,7 +169,7 @@
         chart_series3=[];
         for (var i = 0; i < response.data.length; i++) {
             x_data3.push(formatTime(response.data[i].createTime));
-            y_data3.push(response.data[i].dist);
+            y_data3.push(response.data[i].humid);
         }
         chart_series3.push({
             name: "humid",
